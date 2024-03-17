@@ -1,19 +1,23 @@
 package pl.edu.agh.gpsdosimeter;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import pl.edu.agh.gpsdosimeter.databinding.ActivityMainBinding;
 
-// A class used for data exchange between radicom callbacks and the activity
-class RadicomResults {
-        public static String resStr;
-}
-
 /* callbacks implementing application-specific functions */
 class RadAppCB implements JRadicom.RCCallbacks {
+    RadAppCB (MainActivity parent)
+    {
+        this.parent = parent;
+    }
+    public MainActivity parent;
 
     public void gps_error_cb()
     {
@@ -39,16 +43,17 @@ class RadAppCB implements JRadicom.RCCallbacks {
         String hours = Integer.toString(fdata.hours);
         String minutes = Integer.toString(fdata.minutes);
         String seconds = Integer.toString(fdata.seconds);
-        /*System.out.printf("Radiation: %s, Day: %s, Month: %s, Year: %s, Hours: %s, Minutes: %s, Seconds: %s, GPS: %s\n", radiation, day,
-                month, year, hours, minutes, seconds, fdata.gpsdata);
-        */
-        RadicomResults.resStr = radiation + ", " + day + "." + month + "." + year + ", " + hours + ", " + minutes + ", " + seconds + ", GPS: " + fdata.gpsdata;
+        String resStr = radiation + ", " + day + "." + month + "." + year + ":" + hours + ":" + minutes + ":" + seconds + ", GPS: " + fdata.gpsdata;
+        parent.tv.setText(resStr);
     }
 }
 
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
+
+    //GUI elements
+    public TextView tv;
 
     JRadicom jradicom;
     RadAppCB radappcb;
@@ -60,9 +65,12 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        // GUI elements setup
+        tv = binding.sampleText;
+
         // Initialise Radicom
         jradicom = new JRadicom();
-        radappcb = new RadAppCB();
+        radappcb = new RadAppCB(this);
 
         int[] frame = jradicom.rc_q_read(); //send query
         //some send function
@@ -70,9 +78,21 @@ public class MainActivity extends AppCompatActivity {
         frame = jradicom.rc_r_read(); //for testing - reply to ourselves
 
         jradicom.decode(frame, radappcb); //decode response
+    }
 
-        // Example of a call to a native method
-        TextView tv = binding.sampleText;
-        tv.setText(RadicomResults.resStr);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.calibrate_btn)
+        {
+            Toast.makeText(this, "Calibration..", Toast.LENGTH_SHORT).show();
+        }
+        return true;
     }
 }
