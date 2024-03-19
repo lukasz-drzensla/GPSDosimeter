@@ -1,6 +1,18 @@
 <resources>
     <string name="app_name">GPSDosimeter</string>
 
+
     <string name="calibrate_menu_item">Calibrate</string>
     <string name="open_map_menu_item">Open radiation map</string>
+    <string name="settings_menu_item">Settings</string>
+
+    <string name="rad_status_OK">Radiation level safe</string>
+    <string name="rad_status_NO_MEAS">No measurement</string>
+    <string name="rad_status_BAD">Radiation level unsafe!</string>
+    <string name="gps_status_OK">GPS connected</string>
+    <string name="gps_status_disconnected">@string/conn_status_ERR</string>
+    <string name="gps_status_ERR">GPS error</string>
+    <string name="conn_status_OK">Dosimeter connected</string>
+    <string name="conn_status_ERR">Dosimeter disconnected</string>
+
 </resources>

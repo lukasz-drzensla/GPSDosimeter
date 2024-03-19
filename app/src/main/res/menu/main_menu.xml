@@ -9,4 +9,7 @@
         android:id="@+id/open_map_btn"
         android:title="@string/open_map_menu_item" />
 
+    <item
+        android:id="@+id/settings"
+        android:title="@string/settings_menu_item" />
 </menu>
