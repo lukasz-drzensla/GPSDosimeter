@@ -27,8 +27,8 @@ project("gpsdosimeter")
 add_library(${CMAKE_PROJECT_NAME} SHARED
         # List C/C++ source files with relative paths to this CMakeLists.txt.
         native-lib.cpp
-        CRadicom.c
-        radicom.c)
+        radicom/src/CRadicom.c
+        radicom/src/radicom.c)
 
 # Specifies libraries CMake should link to your target library. You
 # can link libraries from various origins, such as libraries defined in this

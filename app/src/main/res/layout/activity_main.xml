@@ -21,53 +21,50 @@
         android:id="@+id/value_txt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
+        android:layout_marginEnd="12dp"
         android:fontFamily="@font/dseg7"
         android:text="2137.0"
         android:textColor="@color/rad_yellow"
         android:textSize="48sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.027"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.061" />
+        app:layout_constraintEnd_toStartOf="@+id/val_m_txt"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/val_m_txt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
+        android:layout_marginEnd="118dp"
         android:fontFamily="@font/dseg14"
         android:text="m"
         android:textColor="@color/rad_yellow"
         android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="@+id/value_txt"
-        app:layout_constraintStart_toEndOf="@+id/value_txt" />
+        app:layout_constraintBottom_toBottomOf="@+id/val_sv_txt"
+        app:layout_constraintEnd_toEndOf="@+id/val_sv_txt" />
 
     <TextView
         android:id="@+id/val_h_txt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
+        android:layout_marginEnd="4dp"
         android:fontFamily="@font/dseg7"
         android:text="h"
         android:textColor="@color/rad_yellow"
         android:textSize="48sp"
-        app:layout_constraintBottom_toBottomOf="@+id/val_sv_txt"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/val_sv_txt" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/val_sv_txt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
         android:fontFamily="@font/dseg14"
         android:text="Sv/"
         android:textColor="@color/rad_yellow"
         android:textSize="48sp"
-        app:layout_constraintBottom_toBottomOf="@+id/val_m_txt"
-        app:layout_constraintStart_toEndOf="@+id/val_m_txt" />
+        app:layout_constraintBottom_toBottomOf="@+id/val_h_txt"
+        app:layout_constraintEnd_toStartOf="@+id/val_h_txt" />
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/rad_status_led"

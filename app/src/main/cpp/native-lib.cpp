@@ -1,6 +1,6 @@
 #include <jni.h>
 #include <string>
-#include "CRadicom.h"
+#include "radicom/src/CRadicom.h"
 
 extern "C"
 JNIEXPORT jstring JNICALL
