@@ -13,9 +13,29 @@
         android:theme="@style/Theme.GPSDosimeter"
         tools:targetApi="31">
         <activity
+            android:name=".ManageActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".MainActivity"
+            android:label="@string/manage_menu_item">
+        <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value="pl.edu.agh.gpsdosimeter.MainActivity" />
+        </activity>
+        <activity
+            android:name=".SettingsActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".MainActivity"
+            android:label="@string/settings_menu_item">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="pl.edu.agh.gpsdosimeter.MainActivity" />
+        </activity>
+        <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

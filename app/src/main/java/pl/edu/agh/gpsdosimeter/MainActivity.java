@@ -3,14 +3,17 @@ package pl.edu.agh.gpsdosimeter;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.imageview.ShapeableImageView;
+
+import java.io.File;
 
 import pl.edu.agh.gpsdosimeter.databinding.ActivityMainBinding;
 
@@ -52,6 +55,7 @@ class RadAppCB implements JRadicom.RCCallbacks {
 }
 
 public class MainActivity extends AppCompatActivity {
+
     public int getRandomNumber(int min, int max) {
         return (int) ((Math.random() * (max - min)) + min);
     }
@@ -103,6 +107,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        FileManager fileManager = new FileManager();
+        FileManager.AppConfig appConfig;
+        try {
+            String configPath = new File(getApplicationContext().getFilesDir(), "config.xml").getAbsolutePath();
+            appConfig = fileManager.loadAppConfig(configPath);
+        } catch (Exception e){
+            Log.d("ERROR", e.toString());
+        }
+
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -113,6 +126,7 @@ public class MainActivity extends AppCompatActivity {
         rad_status_led = binding.radStatusLed;
         gps_status_txt = binding.gpsStatusTxt;
         gps_status_led = binding.gpsStatusLed;
+
 
         // Initialise Radicom
         jradicom = new JRadicom();
@@ -127,6 +141,7 @@ public class MainActivity extends AppCompatActivity {
 
         send_read_query(); //setup request query thread
         /* some listen function */ //setup receive and decode thread
+
     }
 
     @Override
@@ -138,9 +153,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.calibrate_btn)
+        if (id == R.id.settings_btn)
         {
-            Toast.makeText(this, "Calibration..", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+        } else if (id == R.id.manage_btn)
+        {
+            startActivity(new Intent(MainActivity.this, ManageActivity.class));
         }
         return true;
     }

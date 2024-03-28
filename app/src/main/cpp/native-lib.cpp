@@ -29,3 +29,8 @@ JNIEXPORT jintArray JNICALL
 Java_pl_edu_agh_gpsdosimeter_JRadicom_r_1read(JNIEnv *env, jobject thiz) {
     return r_read(env, thiz);
 }
+extern "C"
+JNIEXPORT jintArray JNICALL
+Java_pl_edu_agh_gpsdosimeter_JRadicom_q_1memread(JNIEnv *env, jobject thiz) {
+    return q_read(env, thiz);
+}

@@ -6,10 +6,10 @@
         android:id="@+id/calibrate_btn"
         android:title="@string/calibrate_menu_item" />
     <item
-        android:id="@+id/open_map_btn"
-        android:title="@string/open_map_menu_item" />
+        android:id="@+id/manage_btn"
+        android:title="@string/manage_menu_item" />
 
     <item
-        android:id="@+id/settings"
+        android:id="@+id/settings_btn"
         android:title="@string/settings_menu_item" />
 </menu>
