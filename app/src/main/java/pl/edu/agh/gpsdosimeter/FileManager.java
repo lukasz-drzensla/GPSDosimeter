@@ -1,13 +1,18 @@
 package pl.edu.agh.gpsdosimeter;
 
+import android.util.Log;
+
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,11 +34,22 @@ public class FileManager {
         private int radiation;
         private String dateTime;
 
+        private String comment;
+
         public Measurement(String _gpsData, int _radiation, String _dateTime)
         {
             this.gpsData = _gpsData;
             this.radiation = _radiation;
             this.dateTime = _dateTime;
+            this.comment = "";
+        }
+
+        public Measurement(String _gpsData, int _radiation, String _dateTime, String _comment)
+        {
+            this.gpsData = _gpsData;
+            this.radiation = _radiation;
+            this.dateTime = _dateTime;
+            this.comment = _comment;
         }
 
         public String getGPS()
@@ -50,6 +66,9 @@ public class FileManager {
         {
             return this.dateTime;
         }
+
+        public String getComment() { return this.comment; }
+
     }
 
     class AppConfig {
@@ -99,7 +118,7 @@ public class FileManager {
 
             Element working_file = doc.createElement("working_file");
             Attr attrType = doc.createAttribute("path");
-            attrType.setValue("test.xml");
+            attrType.setValue(workingFilePath);
             working_file.setAttributeNode(attrType);
             rootElement.appendChild(working_file);
 
@@ -133,6 +152,7 @@ public class FileManager {
 
     protected List<Measurement> parseMeasurements(String filepath)
     {
+        Log.d("DEBUG", "Parsing measurements");
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder;
         try {
@@ -150,11 +170,12 @@ public class FileManager {
             e.printStackTrace();
             return null;
         }
+
         Element measRoot = measDoc.getDocumentElement();
         NodeList mNodes = measRoot.getElementsByTagName("measurement");
         for (int i = 0; i < mNodes.getLength(); i++)
         {
-            measurements.add (new Measurement(((Element)mNodes.item(i)).getAttribute("gps"), Integer.valueOf(((Element)mNodes.item(i)).getAttribute("radiation")), ((Element)mNodes.item(i)).getAttribute("date")));
+            measurements.add (new Measurement(((Element)mNodes.item(i)).getAttribute("gps"), Integer.valueOf(((Element)mNodes.item(i)).getAttribute("radiation")), ((Element)mNodes.item(i)).getAttribute("date"), ((Element)mNodes.item(i)).getAttribute("comment")));
         }
         return measurements;
     }
@@ -190,5 +211,35 @@ public class FileManager {
         AppConfig appConfig = loadAppConfig(configPath);
         String measurementsPath = appConfig.getWorkingFilePath();
         return parseMeasurements(measurementsPath);
+    }
+
+    /* return 0 on success, other on error */
+    public int exportCSV (List<Measurement> measurements, String filepath)
+    {
+        List<List<String>> elements = new ArrayList<List<String>>();
+
+        List<String> header = new ArrayList<String>();
+        header.add("gps");
+        header.add("radiation");
+        header.add("date");
+
+        elements.add(header);
+
+        for (Measurement meas : measurements)
+        {
+            List<String> row = new ArrayList<String>();
+            row.add(meas.getGPS());
+            row.add(Integer.toString(meas.getRadiation()));
+            row.add(meas.getDateTime());
+            elements.add(row);
+        }
+
+        CSVDoc csvDoc = new CSVDoc(elements);
+        return csvDoc.saveToFile(filepath);
+    }
+
+    void createNewFile (String filepath) throws IOException {
+        File file = new File(filepath);
+        file.createNewFile();
     }
 }

@@ -6,8 +6,8 @@
     <string name="manage_menu_item">Manage measurements</string>
     <string name="settings_menu_item">Settings</string>
 
-    <string name="new_file_menu_item">New file</string>
-    <string name="open_file_menu_item">Open file</string>
+    <string name="new_file_menu_item">New measurement collection</string>
+    <string name="open_file_menu_item">Open measurement collection</string>
     <string name="save_menu_item">Save</string>
     <string name="save_as_menu_item">Save as</string>
 
@@ -20,11 +20,21 @@
     <string name="conn_status_OK">Dosimeter connected</string>
     <string name="conn_status_ERR">Dosimeter disconnected</string>
 
-    <string name="working_file_prompt">File: </string>
+    <string name="working_file_prompt">Measurement collection: </string>
     <string name="raw_data_prompt">Raw dosimeter data:</string>
     <string name="fetch_data_btn">Fetch data</string>
 
     <string name="settings_enable_comments">Enable comments</string>
+
+    <!--Dialogs-->
+    <string name="new_file_title">Create new measurement collection</string>
+    <string name="new_file_txt">Enter file name</string>
+    <string name="new_file_create">Create file</string>
+    <string name="cancel">Cancel</string>
+
+    <!--Failure messages-->
+    <string name="empty_or_unrecognisable">File is empty or unrecognisable</string>
+    <string name="not_found">Not found</string>
 
 
 
