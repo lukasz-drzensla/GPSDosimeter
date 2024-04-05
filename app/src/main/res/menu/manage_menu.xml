@@ -8,10 +8,10 @@
         android:title="@string/open_file_menu_item" />
 
     <item
-        android:id="@+id/save_btn"
-        android:title="@string/save_menu_item" />
+        android:id="@+id/remove_btn"
+        android:title="@string/remove_menu_item" />
 
     <item
-        android:id="@+id/save_as_btn"
-        android:title="@string/save_as_menu_item" />
+        android:id="@+id/export_as"
+        android:title="@string/export_menu_item" />
 </menu>

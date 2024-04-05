@@ -8,8 +8,8 @@
 
     <string name="new_file_menu_item">New measurement collection</string>
     <string name="open_file_menu_item">Open measurement collection</string>
-    <string name="save_menu_item">Save</string>
-    <string name="save_as_menu_item">Save as</string>
+    <string name="remove_menu_item">Remove measurement collections</string>
+    <string name="export_menu_item">Export as CSV</string>
 
     <string name="rad_status_OK">Radiation level safe</string>
     <string name="rad_status_NO_MEAS">No measurement</string>
@@ -21,8 +21,8 @@
     <string name="conn_status_ERR">Dosimeter disconnected</string>
 
     <string name="working_file_prompt">Measurement collection: </string>
-    <string name="raw_data_prompt">Raw dosimeter data:</string>
     <string name="fetch_data_btn">Fetch data</string>
+    <string name="create_map_btn">Create map of radiation</string>
 
     <string name="settings_enable_comments">Enable comments</string>
 

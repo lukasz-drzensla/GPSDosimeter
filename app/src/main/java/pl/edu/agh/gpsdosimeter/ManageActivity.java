@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -214,6 +215,46 @@ public class ManageActivity extends AppCompatActivity {
             builder.show();
 
 
+        } else if (id == R.id.open_file_btn)
+        {
+            ArrayList<String> files = new ArrayList<String>();
+            File folder = new File(getApplicationContext().getFilesDir().getAbsolutePath());
+            File[] filesArray = folder.listFiles();
+
+            for (int i = 0; i < filesArray.length; i++) {
+                if (filesArray[i].isFile()) {
+                    if (filesArray[i].getName().contains(".xml") && !filesArray[i].getName().equals("config.xml"))
+                    {
+                        Log.d("DEBUG", "File " + filesArray[i].getName());
+                        files.add(filesArray[i].getName());
+                    }
+                }
+            }
+
+            String[] names = new String[files.size()];
+            files.toArray(names);
+            ListView listView;
+            ArrayAdapter<String> myAdapter;
+            AlertDialog.Builder alertDialog = new
+                    AlertDialog.Builder(this);
+            View rowList = getLayoutInflater().inflate(R.layout.open_file_row, null);
+            listView = rowList.findViewById(R.id.open_dialog_listView);
+            myAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, names);
+            listView.setAdapter(myAdapter);
+            myAdapter.notifyDataSetChanged();
+            alertDialog.setView(rowList);
+            AlertDialog dialog = alertDialog.create();
+            dialog.show();
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Log.d("OpenFileDialog", Integer.toString(position));
+                    openFile(names[position]);
+                    String working_file = getResources().getString(R.string.working_file_prompt) + " " + appConfig.getWorkingFilePath();
+                    working_file_txt.setText(working_file);
+                    dialog.dismiss();
+                }
+            });
         }
         return true;
     }
@@ -241,6 +282,60 @@ public class ManageActivity extends AppCompatActivity {
         Log.d("DEBUG", "Cleared");
 
         measurements.clear();
+        adapter.notifyDataSetChanged();
+    }
+
+    void openFile (String fileName)
+    {
+        measurements.clear();
+
+        FileManager fileManager = new FileManager();
+        appConfig = fileManager.createAppConfig("", "");
+        try {
+            String configPath = new File(getApplicationContext().getFilesDir(), "config.xml").getAbsolutePath();
+            appConfig = fileManager.loadAppConfig(configPath);
+        } catch (Exception e){
+            Log.d("ERROR", e.toString());
+        }
+        appConfig.setWorkingFilePath(fileName);
+        appConfig.saveConfig(new File(getApplicationContext().getFilesDir(), "config.xml").getAbsolutePath());
+
+        List<String> recvContents = new ArrayList<String>();
+        boolean fileExists = false;
+        List<String> lines = new ArrayList<String>();
+        try {
+            Scanner myReader = new Scanner(new File(getApplicationContext().getFilesDir(), appConfig.getWorkingFilePath()));
+            while (myReader.hasNextLine()) {
+                String line = myReader.nextLine();
+                lines.add(line);
+            }
+            myReader.close();
+            fileExists = true;
+        } catch (FileNotFoundException e) {
+            recvContents.add(getResources().getString(R.string.not_found));
+            Log.d("ERROR", e.toString());
+        }
+
+        if (fileExists)
+        {
+            List<FileManager.Measurement> measTempList = fileManager.parseMeasurements((new File(getApplicationContext().getFilesDir(), appConfig.getWorkingFilePath())).getAbsolutePath());
+            if (measTempList != null)
+            {
+                for (FileManager.Measurement meas : measTempList)
+                {
+                    String com = "";
+                    if (!Objects.equals(meas.getComment(), ""))
+                    {
+                        com += ", " + meas.getComment();
+                    }
+                    measurements.add(meas.getGPS() + ", " + Integer.toString(meas.getRadiation()) + ", " + meas.getDateTime() + com);
+                }
+            } else {
+                measurements.add (getResources().getString(R.string.empty_or_unrecognisable));
+            }
+        } else {
+            measurements.add (getResources().getString(R.string.not_found));
+        }
         adapter.notifyDataSetChanged();
     }
 }
