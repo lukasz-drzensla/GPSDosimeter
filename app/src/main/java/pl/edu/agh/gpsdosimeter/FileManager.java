@@ -27,7 +27,8 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 public class FileManager {
-    private final String configPath = "config.xml";
+    public final String configPath = "config.xml";
+    private final String defaultConfig = "<?xml version=\"1.0\" encoding=\"utf-8\"?><config><working_file path=\"test.xml\"/><add_comments value=\"true\"/></config>";
 
     class Measurement {
         private String gpsData;
@@ -72,8 +73,8 @@ public class FileManager {
     }
 
     class AppConfig {
-        private String workingFilePath;
-        private boolean addComments;
+        private String workingFilePath = "";
+        private boolean addComments = false;
         public AppConfig(String _workingFilePath, String _addComments) {
             this.workingFilePath = _workingFilePath;
             if (_addComments.contains("true"))
@@ -143,6 +144,37 @@ public class FileManager {
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    public boolean createCleanConfig (String filepath)
+    {
+        BufferedWriter writer;
+        try {
+            writer = new BufferedWriter(new FileWriter(filepath));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        try {
+            writer.write(defaultConfig);
+        } catch (IOException e) {
+            try {
+                writer.close();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+            e.printStackTrace();
+            return false;
+        }
+
+        try {
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 
     protected AppConfig createAppConfig(String _workingFilePath, String _addComments)

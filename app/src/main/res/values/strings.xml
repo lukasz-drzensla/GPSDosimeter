@@ -25,6 +25,7 @@
     <string name="create_map_btn">Create map of radiation</string>
 
     <string name="settings_enable_comments">Enable comments</string>
+    <string name="settings_new_config">Load default configuration</string>
 
     <!--Dialogs-->
     <string name="new_file_title">Create new measurement collection</string>

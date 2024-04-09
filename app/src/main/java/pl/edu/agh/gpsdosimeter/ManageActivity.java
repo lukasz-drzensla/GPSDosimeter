@@ -109,17 +109,22 @@ public class ManageActivity extends AppCompatActivity {
         List<String> recvContents = new ArrayList<String>();
         boolean fileExists = false;
         List<String> lines = new ArrayList<String>();
-        try {
-            Scanner myReader = new Scanner(new File(getApplicationContext().getFilesDir(), appConfig.getWorkingFilePath()));
-            while (myReader.hasNextLine()) {
-                String line = myReader.nextLine();
-                lines.add(line);
+        if (appConfig != null)
+        {
+            try {
+                Scanner myReader = new Scanner(new File(getApplicationContext().getFilesDir(), appConfig.getWorkingFilePath()));
+                while (myReader.hasNextLine()) {
+                    String line = myReader.nextLine();
+                    lines.add(line);
+                }
+                myReader.close();
+                fileExists = true;
+            } catch (FileNotFoundException e) {
+                recvContents.add(getResources().getString(R.string.not_found));
+                Log.d("ERROR", e.toString());
             }
-            myReader.close();
-            fileExists = true;
-        } catch (FileNotFoundException e) {
+        } else {
             recvContents.add(getResources().getString(R.string.not_found));
-            Log.d("ERROR", e.toString());
         }
 
         jradicom = new JRadicom();
@@ -130,7 +135,11 @@ public class ManageActivity extends AppCompatActivity {
         Window window = this.getWindow();
         window.setStatusBarColor(getResources().getColor(R.color.rad_yellow_dark));
         working_file_txt = findViewById(R.id.working_file_txt);
-        String working_file = getResources().getString(R.string.working_file_prompt) + " " + appConfig.getWorkingFilePath();
+        String working_file = getResources().getString(R.string.not_found);
+        if (appConfig != null)
+        {
+            working_file = getResources().getString(R.string.working_file_prompt) + " " + appConfig.getWorkingFilePath();
+        }
         working_file_txt.setText(working_file);
         fetch_data_button = findViewById(R.id.fetch_data_btn);
         data_list_view = findViewById(R.id.data_list_view);

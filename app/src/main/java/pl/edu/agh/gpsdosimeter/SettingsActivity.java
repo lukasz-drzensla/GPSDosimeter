@@ -2,6 +2,8 @@ package pl.edu.agh.gpsdosimeter;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 
@@ -29,6 +31,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         /* GUI elements */
         Switch en_comm_sw = findViewById(R.id.en_comm_sw);
+        Button def_conf_btn = findViewById(R.id.load_def_conf_btn);
 
         FileManager initFileManager = new FileManager();
         FileManager.AppConfig initAppConfig = initFileManager.createAppConfig("", "");
@@ -39,7 +42,10 @@ public class SettingsActivity extends AppCompatActivity {
             Log.d("ERROR", e.toString());
         }
 
-        en_comm_sw.setChecked(initAppConfig.getAddComments());
+        if (initAppConfig != null)
+        {
+            en_comm_sw.setChecked(initAppConfig.getAddComments());
+        }
 
         en_comm_sw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -50,12 +56,38 @@ public class SettingsActivity extends AppCompatActivity {
                 try {
                     String configPath = new File(getApplicationContext().getFilesDir(), "config.xml").getAbsolutePath();
                     appConfig = fileManager.loadAppConfig(configPath);
-                } catch (Exception e){
+                } catch (Exception e) {
                     Log.d("ERROR", e.toString());
                 }
-                appConfig.setAddComments(isChecked);
-                appConfig.saveConfig(new File(getApplicationContext().getFilesDir(), "config.xml").getAbsolutePath());
+                if (appConfig != null) {
+                    appConfig.setAddComments(isChecked);
+                    appConfig.saveConfig(new File(getApplicationContext().getFilesDir(), "config.xml").getAbsolutePath());
+                } else {
+                    Log.e("Settings Activity", "Unable to open config file");
+                    buttonView.setChecked(!isChecked);
+                }
+            }
+        });
 
+        def_conf_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FileManager initFileManager = new FileManager();
+                if (initFileManager.createCleanConfig(new File(getApplicationContext().getFilesDir(), initFileManager.configPath).getAbsolutePath()))
+                {
+                    FileManager.AppConfig initAppConfig = initFileManager.createAppConfig("", "");
+                    try {
+                        String configPath = new File(getApplicationContext().getFilesDir(), "config.xml").getAbsolutePath();
+                        initAppConfig = initFileManager.loadAppConfig(configPath);
+                    } catch (Exception e){
+                        Log.d("ERROR", e.toString());
+                    }
+
+                    if (initAppConfig != null)
+                    {
+                        en_comm_sw.setChecked(initAppConfig.getAddComments());
+                    }
+                }
             }
         });
     }
