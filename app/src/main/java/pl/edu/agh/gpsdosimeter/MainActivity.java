@@ -75,8 +75,8 @@ public class MainActivity extends AppCompatActivity {
     public ShapeableImageView rad_status_led;
     public TextView gps_status_txt;
     public ShapeableImageView gps_status_led;
-    public EditText comment_txt;
-    public Button measure_and_save_btn;
+    private EditText comment_txt;
+    private Button measure_and_save_btn;
     private ActivityMainBinding binding;
     /* Radicom objects */
     JRadicom jradicom;

@@ -73,7 +73,7 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 FileManager initFileManager = new FileManager();
-                if (initFileManager.createCleanConfig(new File(getApplicationContext().getFilesDir(), initFileManager.configPath).getAbsolutePath()))
+                if (initFileManager.createCleanConfig(new File(getApplicationContext().getFilesDir(), initFileManager.configName).getAbsolutePath()))
                 {
                     FileManager.AppConfig initAppConfig = initFileManager.createAppConfig("", "");
                     try {

@@ -26,7 +26,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 public class FileManager {
-    public final String configPath = "config.xml";
+    public final String configName = "config.xml";
     private final String defaultConfig = "<?xml version=\"1.0\" encoding=\"utf-8\"?><config><working_file path=\"test.xml\"/><add_comments value=\"true\"/></config>";
 
     class AppConfig {
@@ -52,7 +52,7 @@ public class FileManager {
             this.addComments = _addComments;
         }
 
-        public String getWorkingFilePath ()
+        public String getWorkingFileName()
         {
             return workingFilePath;
         }
@@ -138,6 +138,10 @@ public class FileManager {
     {
         return new AppConfig(_workingFilePath, _addComments);
     }
+    protected AppConfig createAppConfig()
+    {
+        return new AppConfig("", "");
+    }
 
     protected List<Measurement> parseMeasurements(String filepath)
     {
@@ -199,7 +203,7 @@ public class FileManager {
     {
         String configPath = new File(parentPath, "config.xml").getAbsolutePath();
         AppConfig appConfig = loadAppConfig(configPath);
-        String measurementsPath = new File (parentPath, appConfig.getWorkingFilePath()).getAbsolutePath();
+        String measurementsPath = new File (parentPath, appConfig.getWorkingFileName()).getAbsolutePath();
         return parseMeasurements(measurementsPath);
     }
 
