@@ -9,7 +9,7 @@
     <string name="new_file_menu_item">New measurement collection</string>
     <string name="open_file_menu_item">Open measurement collection</string>
     <string name="remove_menu_item">Remove measurement collections</string>
-    <string name="export_menu_item">Export as CSV</string>
+    <string name="export_menu_item">Share as CSV</string>
 
     <string name="rad_status_OK">Radiation level safe</string>
     <string name="rad_status_NO_MEAS">No measurement</string>
@@ -19,6 +19,8 @@
     <string name="gps_status_ERR">GPS error</string>
     <string name="conn_status_OK">Dosimeter connected</string>
     <string name="conn_status_ERR">Dosimeter disconnected</string>
+    <string name="meas_and_save_txt">Measure and save</string>
+    <string name="comment_txt_placeholder">Comment...</string>
 
     <string name="working_file_prompt">Measurement collection: </string>
     <string name="fetch_data_btn">Fetch data</string>

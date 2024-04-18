@@ -9,6 +9,9 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.android.material.imageview.ShapeableImageView;
@@ -49,12 +52,18 @@ class RadAppCB implements JRadicom.RCCallbacks {
         String hours = Integer.toString(fdata.hours);
         String minutes = Integer.toString(fdata.minutes);
         String seconds = Integer.toString(fdata.seconds);
-        String resStr = radiation + ", " + day + "." + month + "." + year + ":" + hours + ":" + minutes + ":" + seconds + ", GPS: " + fdata.gpsdata;
+        String date = day + "." + month + "." + year + ":" + hours + ":" + minutes + ":" + seconds;
+        String resStr = radiation + ", " + date + ", GPS: " + fdata.gpsdata;
+        parent.current_measurement.setGpsData(fdata.gpsdata);
+        parent.current_measurement.setRadiation(fdata.radiation);
+        parent.current_measurement.setDateTime(date);
         parent.tv.setText(resStr);
     }
 }
 
 public class MainActivity extends AppCompatActivity {
+
+    public Measurement current_measurement = new Measurement("", 0, "", "");
 
     public int getRandomNumber(int min, int max) {
         return (int) ((Math.random() * (max - min)) + min);
@@ -66,6 +75,8 @@ public class MainActivity extends AppCompatActivity {
     public ShapeableImageView rad_status_led;
     public TextView gps_status_txt;
     public ShapeableImageView gps_status_led;
+    public EditText comment_txt;
+    public Button measure_and_save_btn;
     private ActivityMainBinding binding;
     /* Radicom objects */
     JRadicom jradicom;
@@ -108,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         FileManager fileManager = new FileManager();
-        FileManager.AppConfig appConfig;
+        FileManager.AppConfig appConfig = null;
         try {
             String configPath = new File(getApplicationContext().getFilesDir(), "config.xml").getAbsolutePath();
             appConfig = fileManager.loadAppConfig(configPath);
@@ -126,7 +137,27 @@ public class MainActivity extends AppCompatActivity {
         rad_status_led = binding.radStatusLed;
         gps_status_txt = binding.gpsStatusTxt;
         gps_status_led = binding.gpsStatusLed;
+        comment_txt = binding.commentTxt;
+        measure_and_save_btn = binding.measureAndSaveBtn;
 
+        if (appConfig != null && !appConfig.getAddComments())
+        {
+            comment_txt.setVisibility(View.INVISIBLE);
+        }
+
+        FileManager.AppConfig finalAppConfig = appConfig;
+        measure_and_save_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String comment = "";
+                if (finalAppConfig != null && finalAppConfig.getAddComments())
+                {
+                    comment = comment_txt.getText().toString();
+                }
+                current_measurement.setComment(comment);
+                //trigger radicom function for measure and save
+            }
+        });
 
         // Initialise Radicom
         jradicom = new JRadicom();

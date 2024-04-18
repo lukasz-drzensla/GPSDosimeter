@@ -4,6 +4,8 @@ import static android.app.PendingIntent.getActivity;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
@@ -21,6 +23,7 @@ import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -148,10 +151,10 @@ public class ManageActivity extends AppCompatActivity {
 
         if (fileExists)
         {
-            List<FileManager.Measurement> measTempList = fileManager.parseMeasurements((new File(getApplicationContext().getFilesDir(), appConfig.getWorkingFilePath())).getAbsolutePath());
+            List<Measurement> measTempList = fileManager.parseMeasurements((new File(getApplicationContext().getFilesDir(), appConfig.getWorkingFilePath())).getAbsolutePath());
             if (measTempList != null)
             {
-                for (FileManager.Measurement meas : measTempList)
+                for (Measurement meas : measTempList)
                 {
                     String com = "";
                     if (!Objects.equals(meas.getComment(), ""))
@@ -264,6 +267,25 @@ public class ManageActivity extends AppCompatActivity {
                     dialog.dismiss();
                 }
             });
+        } else if (id == R.id.export_as)
+        {
+            if (0 == fileManager.exportCSV(fileManager.loadMeasurements(new File(getApplicationContext().getFilesDir(), "").getAbsolutePath()), (new File(getFilesDir(), "export.csv")).getAbsolutePath()))
+            {
+                final File csvFile = new File(getFilesDir(), "export.csv");
+                Uri csvFileUri = FileProvider.getUriForFile(ManageActivity.this,"pl.edu.agh.gpsdosimeter", csvFile);
+
+                ArrayList<Uri> exportFiles = new ArrayList<Uri>();
+                exportFiles.add(csvFileUri);
+
+                Intent shareIntent = new Intent();
+                shareIntent.setAction(Intent.ACTION_SEND_MULTIPLE);
+                shareIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, exportFiles);
+                shareIntent.setType("text/csv");
+                startActivity(Intent.createChooser(shareIntent, getResources().getString(R.string.export_menu_item)));
+            } else {
+                Log.e("EXPORT", "Error creating CSV file");
+                return false;
+            }
         }
         return true;
     }
@@ -327,10 +349,10 @@ public class ManageActivity extends AppCompatActivity {
 
         if (fileExists)
         {
-            List<FileManager.Measurement> measTempList = fileManager.parseMeasurements((new File(getApplicationContext().getFilesDir(), appConfig.getWorkingFilePath())).getAbsolutePath());
+            List<Measurement> measTempList = fileManager.parseMeasurements((new File(getApplicationContext().getFilesDir(), appConfig.getWorkingFilePath())).getAbsolutePath());
             if (measTempList != null)
             {
-                for (FileManager.Measurement meas : measTempList)
+                for (Measurement meas : measTempList)
                 {
                     String com = "";
                     if (!Objects.equals(meas.getComment(), ""))

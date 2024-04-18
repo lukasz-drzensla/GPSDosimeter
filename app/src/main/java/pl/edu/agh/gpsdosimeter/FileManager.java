@@ -12,7 +12,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,48 +28,6 @@ import javax.xml.transform.stream.StreamResult;
 public class FileManager {
     public final String configPath = "config.xml";
     private final String defaultConfig = "<?xml version=\"1.0\" encoding=\"utf-8\"?><config><working_file path=\"test.xml\"/><add_comments value=\"true\"/></config>";
-
-    class Measurement {
-        private String gpsData;
-        private int radiation;
-        private String dateTime;
-
-        private String comment;
-
-        public Measurement(String _gpsData, int _radiation, String _dateTime)
-        {
-            this.gpsData = _gpsData;
-            this.radiation = _radiation;
-            this.dateTime = _dateTime;
-            this.comment = "";
-        }
-
-        public Measurement(String _gpsData, int _radiation, String _dateTime, String _comment)
-        {
-            this.gpsData = _gpsData;
-            this.radiation = _radiation;
-            this.dateTime = _dateTime;
-            this.comment = _comment;
-        }
-
-        public String getGPS()
-        {
-            return this.gpsData;
-        }
-
-        public int getRadiation()
-        {
-            return this.radiation;
-        }
-
-        public String getDateTime()
-        {
-            return this.dateTime;
-        }
-
-        public String getComment() { return this.comment; }
-
-    }
 
     class AppConfig {
         private String workingFilePath = "";
@@ -238,10 +195,11 @@ public class FileManager {
         return createAppConfig(workingFile.getAttribute("path"), addComments.getAttribute("value"));
     }
 
-    public List<Measurement> loadMeasurements()
+    public List<Measurement> loadMeasurements(String parentPath)
     {
+        String configPath = new File(parentPath, "config.xml").getAbsolutePath();
         AppConfig appConfig = loadAppConfig(configPath);
-        String measurementsPath = appConfig.getWorkingFilePath();
+        String measurementsPath = new File (parentPath, appConfig.getWorkingFilePath()).getAbsolutePath();
         return parseMeasurements(measurementsPath);
     }
 
@@ -254,6 +212,7 @@ public class FileManager {
         header.add("gps");
         header.add("radiation");
         header.add("date");
+        header.add("comment");
 
         elements.add(header);
 
@@ -263,6 +222,7 @@ public class FileManager {
             row.add(meas.getGPS());
             row.add(Integer.toString(meas.getRadiation()));
             row.add(meas.getDateTime());
+            row.add(meas.getComment());
             elements.add(row);
         }
 
@@ -274,4 +234,5 @@ public class FileManager {
         File file = new File(filepath);
         file.createNewFile();
     }
+
 }

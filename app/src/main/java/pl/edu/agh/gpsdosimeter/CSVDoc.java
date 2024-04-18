@@ -1,5 +1,7 @@
 package pl.edu.agh.gpsdosimeter;
 
+import android.util.Log;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -38,7 +40,7 @@ public class CSVDoc
             }
             myReader.close();
         } catch (FileNotFoundException e) {
-            System.out.println("File not found");
+            Log.e("CSVDOC", "File not found");
             e.printStackTrace();
         }
         rows = lines.size();
@@ -142,7 +144,7 @@ public class CSVDoc
     {
         BufferedWriter writer;
         try {
-            writer = new BufferedWriter(new FileWriter(pathString));
+            writer = new BufferedWriter(new FileWriter(pathString, false));
         } catch (IOException e) {
             e.printStackTrace();
             return -1;
