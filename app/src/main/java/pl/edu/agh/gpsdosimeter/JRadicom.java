@@ -1,5 +1,7 @@
 package pl.edu.agh.gpsdosimeter;
 
+import android.util.Log;
+
 interface JRadIF {
     public int[] rc_q_read();
     public int[] rc_r_read();
@@ -62,6 +64,7 @@ public class JRadicom implements JRadIF {
         static final int EC_ALARM = 3;
 
         static final int GPS_DATALEN = 80;
+        static final int FRAME_SIZE = 100;
     }
 
     //Functions for sending queries
@@ -153,7 +156,7 @@ public class JRadicom implements JRadIF {
             }
 
             /* function checking */
-            switch (hdr.ec)
+            switch (hdr.fc)
             {
                 case RC.FC_READ:
                     callbacks.read_r_cb(rc_process_read(frame));

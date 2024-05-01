@@ -2,8 +2,12 @@ package pl.edu.agh.gpsdosimeter;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -17,6 +21,7 @@ import android.widget.TextView;
 import com.google.android.material.imageview.ShapeableImageView;
 
 import java.io.File;
+import java.io.IOException;
 
 import pl.edu.agh.gpsdosimeter.databinding.ActivityMainBinding;
 
@@ -57,7 +62,19 @@ class RadAppCB implements JRadicom.RCCallbacks {
         parent.current_measurement.setGpsData(fdata.gpsdata);
         parent.current_measurement.setRadiation(fdata.radiation);
         parent.current_measurement.setDateTime(date);
-        parent.tv.setText(resStr);
+        parent.value_txt.post(new Runnable() {
+            @Override
+            public void run() {
+                parent.value_txt.setText(radiation);
+            }
+        });
+
+        parent.tv.post(new Runnable() {
+            @Override
+            public void run() {
+                parent.tv.setText(resStr);
+            }
+        });
     }
 }
 
@@ -78,6 +95,11 @@ public class MainActivity extends AppCompatActivity {
     private EditText comment_txt;
     private Button measure_and_save_btn;
     private ActivityMainBinding binding;
+
+    /* BT objects */
+    BTTools btTools = null;
+    BTCb btCb = null;
+
     /* Radicom objects */
     JRadicom jradicom;
     RadAppCB radappcb;
@@ -96,20 +118,23 @@ public class MainActivity extends AppCompatActivity {
                 catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                handler.post(new Runnable(){
-                    public void run() {
-                        /* setup frame */
-                        int[] frame = jradicom.rc_q_read();
-                        /* some send frame function */
-                        int val = getRandomNumber(0, 4);
-
-                        //set_rad_level(val);
-                        //set_gps_status(val);
-
-                        value_txt.setText(Integer.toString(val)); //dummy function
-                    }
-                });
-            }
+                    handler.post(new Runnable(){
+                        public void run() {
+                            /* setup frame */
+                            int[] frame = jradicom.rc_q_read();
+                            /* some send frame function */
+                            byte[] msg = new byte[JRadicom.RC.FRAME_SIZE];
+                            for (int i = 0; i < JRadicom.RC.FRAME_SIZE; i++)
+                            {
+                                msg[i] = (byte) frame[i];
+                            }
+                            if (btTools.isConnected())
+                            {
+                                btTools.write(msg);
+                            }
+                        }
+                    });
+                }
         };
         new Thread(runnable).start();
     }
@@ -162,17 +187,36 @@ public class MainActivity extends AppCompatActivity {
         // Initialise Radicom
         jradicom = new JRadicom();
         radappcb = new RadAppCB(this);
+        btCb = new BTCb(jradicom, radappcb);
 
-        int[] frame = jradicom.rc_q_read(); //send query
+        // Initialise BT
+        checkPermission(android.Manifest.permission.BLUETOOTH, BTTools.permission_codes.BT.ordinal());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            checkPermission(android.Manifest.permission.BLUETOOTH_CONNECT, BTTools.permission_codes.BT.ordinal());
+        }
+        btTools = new BTTools();
+        try {
+            BTTools.ConnInfo connInfo = btTools.connect(this, btCb);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         //some send function
         //some wait for response
-        frame = jradicom.rc_r_read(); //for testing - reply to ourselves
+        //frame = jradicom.rc_r_read(); //for testing - reply to ourselves
 
-        jradicom.decode(frame, radappcb); //decode response
+        //jradicom.decode(frame, radappcb); //decode response
 
         send_read_query(); //setup request query thread
         /* some listen function */ //setup receive and decode thread
 
+    }
+
+    private void checkPermission(String permission, int requestCode)
+    {
+        if (ContextCompat.checkSelfPermission(MainActivity.this, permission) == PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(MainActivity.this, new String[] { permission }, requestCode);
+        }
     }
 
     @Override
