@@ -10,6 +10,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -23,6 +24,8 @@ public class RadiationMap extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private ActivityRadiationMapBinding binding;
 
+    private ArrayList<Measurement> measurements = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,11 +36,7 @@ public class RadiationMap extends FragmentActivity implements OnMapReadyCallback
         //get parameter
         Intent intent = this.getIntent();
         Bundle bundle = intent.getExtras();
-        ArrayList<Measurement> measurements = (ArrayList<Measurement>)bundle.getSerializable("measurements");
-        for (Measurement m : measurements)
-        {
-            Log.d("Measurement", m.getComment());
-        }
+        measurements = (ArrayList<Measurement>)bundle.getSerializable("measurements");
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -60,7 +59,21 @@ public class RadiationMap extends FragmentActivity implements OnMapReadyCallback
 
         // Add a marker in Sydney and move the camera
         LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+
+        if (measurements != null)
+        {
+            for (Measurement m : measurements)
+            {
+                Log.d("Measurement", m.getComment());
+                RMCParser rmcParser = new RMCParser();
+                RMCParser.GPSDataUnpacked gpsDataUnpacked = rmcParser.parse(m.getGPS());
+                Log.d("Parser", Double.toString(gpsDataUnpacked.getLat()));
+                LatLng latLng = new LatLng(gpsDataUnpacked.getLat(), gpsDataUnpacked.getLon());
+                mMap.addMarker(new MarkerOptions().position(latLng).title(m.getComment()).icon(BitmapDescriptorFactory.defaultMarker(RadiGrader.grade(m.getRadiation()))));
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+            }
+        }
     }
 }
