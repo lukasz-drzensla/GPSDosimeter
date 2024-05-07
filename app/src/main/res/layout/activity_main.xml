@@ -12,11 +12,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Hello World!"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.886" />
+        app:layout_constraintVertical_bias="0.886"
+        tools:visibility="invisible" />
 
     <TextView
         android:id="@+id/value_txt"
@@ -25,7 +27,7 @@
         android:layout_marginTop="48dp"
         android:layout_marginEnd="12dp"
         android:fontFamily="@font/dseg7"
-        android:text="2137.0"
+        android:text="0"
         android:textColor="@color/rad_yellow"
         android:textSize="48sp"
         app:layout_constraintEnd_toStartOf="@+id/val_m_txt"
@@ -73,7 +75,7 @@
         android:layout_height="37sp"
         android:layout_marginStart="4dp"
         android:layout_marginTop="120dp"
-        android:background="@color/rad_green"
+        android:background="@color/rad_yellow"
         android:padding="5sp"
         android:src="@drawable/logo_square_trans_fore"
         app:layout_constraintStart_toStartOf="parent"
@@ -87,7 +89,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:text="@string/rad_status_OK"
+        android:text="@string/rad_status_NO_MEAS"
         android:textSize="26sp"
         app:layout_constraintBottom_toBottomOf="@+id/rad_status_led"
         app:layout_constraintStart_toEndOf="@+id/rad_status_led" />
@@ -100,11 +102,13 @@
         android:background="@color/rad_red"
         android:padding="5sp"
         android:src="@drawable/logo_square_trans_fore"
+        android:visibility="invisible"
         app:layout_constraintStart_toStartOf="@+id/rad_status_led"
         app:layout_constraintTop_toBottomOf="@+id/rad_status_led"
         app:shapeAppearanceOverlay="@style/circleImageView"
         app:strokeColor="@android:color/darker_gray"
-        app:strokeWidth="00dp" />
+        app:strokeWidth="00dp"
+        tools:visibility="invisible" />
 
     <TextView
         android:id="@+id/gps_status_txt"
@@ -113,8 +117,10 @@
         android:layout_marginStart="8dp"
         android:text="@string/gps_status_ERR"
         android:textSize="26sp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="@+id/gps_status_led"
-        app:layout_constraintStart_toEndOf="@+id/gps_status_led" />
+        app:layout_constraintStart_toEndOf="@+id/gps_status_led"
+        tools:visibility="invisible" />
 
     <Button
         android:id="@+id/measure_and_save_btn"

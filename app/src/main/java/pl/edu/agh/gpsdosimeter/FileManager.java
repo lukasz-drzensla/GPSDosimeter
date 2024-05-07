@@ -27,12 +27,13 @@ import javax.xml.transform.stream.StreamResult;
 
 public class FileManager {
     public final String configName = "config.xml";
-    private final String defaultConfig = "<?xml version=\"1.0\" encoding=\"utf-8\"?><config><working_file path=\"test.xml\"/><add_comments value=\"true\"/></config>";
+    private final String defaultConfig = "<?xml version=\"1.0\" encoding=\"utf-8\"?><config><working_file path=\"test.xml\"/><add_comments value=\"true\"/><unsafe_level value=\"31.57\"/></config>";
 
     class AppConfig {
         private String workingFilePath = "";
         private boolean addComments = false;
-        public AppConfig(String _workingFilePath, String _addComments) {
+        private float unsafeLevel = 31.57f;
+        public AppConfig(String _workingFilePath, String _addComments, float _unsafeLevel) {
             this.workingFilePath = _workingFilePath;
             if (_addComments.contains("true"))
             {
@@ -40,6 +41,7 @@ public class FileManager {
             } else {
                 this.addComments = false;
             }
+            this.unsafeLevel = _unsafeLevel;
         }
 
         public void setWorkingFilePath(String _workingFilePath)
@@ -52,6 +54,18 @@ public class FileManager {
             this.addComments = _addComments;
         }
 
+        public void setUnsafeLevel(String _unsafeLevel)
+        {
+            Log.d("Parse", _unsafeLevel);
+            try {
+                this.unsafeLevel = Float.parseFloat(_unsafeLevel);
+            } catch (java.lang.NumberFormatException e)
+            {
+                this.unsafeLevel = 0.0f;
+            }
+
+        }
+
         public String getWorkingFileName()
         {
             return workingFilePath;
@@ -60,6 +74,7 @@ public class FileManager {
         {
             return addComments;
         }
+        public float getUnsafeLevel() {return unsafeLevel;}
         public void saveConfig(String path)
         {
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -85,6 +100,12 @@ public class FileManager {
             attrType2.setValue(String.valueOf(this.addComments));
             add_comments.setAttributeNode(attrType2);
             rootElement.appendChild(add_comments);
+
+            Element unsafe_Level = doc.createElement("unsafe_level");
+            Attr attrType3 = doc.createAttribute("value");
+            attrType3.setValue(String.valueOf(this.unsafeLevel));
+            unsafe_Level.setAttributeNode(attrType3);
+            rootElement.appendChild(unsafe_Level);
 
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = null;
@@ -134,13 +155,13 @@ public class FileManager {
         return true;
     }
 
-    protected AppConfig createAppConfig(String _workingFilePath, String _addComments)
+    protected AppConfig createAppConfig(String _workingFilePath, String _addComments, String _unsafeLevel)
     {
-        return new AppConfig(_workingFilePath, _addComments);
+        return new AppConfig(_workingFilePath, _addComments, Float.parseFloat(_unsafeLevel));
     }
     protected AppConfig createAppConfig()
     {
-        return new AppConfig("", "");
+        return new AppConfig("", "", 31.57f);
     }
 
     protected List<Measurement> parseMeasurements(String filepath)
@@ -195,8 +216,9 @@ public class FileManager {
         Element confRoot = config.getDocumentElement();
         Element workingFile = (Element)confRoot.getElementsByTagName("working_file").item(0);
         Element addComments = (Element)confRoot.getElementsByTagName("add_comments").item(0);
+        Element unsafeLevel = (Element)confRoot.getElementsByTagName("unsafe_level").item(0);
 
-        return createAppConfig(workingFile.getAttribute("path"), addComments.getAttribute("value"));
+        return createAppConfig(workingFile.getAttribute("path"), addComments.getAttribute("value"), unsafeLevel.getAttribute("value"));
     }
 
     public List<Measurement> loadMeasurements(String parentPath)

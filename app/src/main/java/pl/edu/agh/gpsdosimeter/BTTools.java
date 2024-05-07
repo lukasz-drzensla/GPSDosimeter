@@ -70,6 +70,8 @@ public class BTTools {
                     name = bt.getName().toString();
                     Log.i("name: ", name);
                 }
+            } else {
+                return new ConnInfo("Error", "Error");
             }
 
         }

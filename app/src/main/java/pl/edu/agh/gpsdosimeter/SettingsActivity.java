@@ -1,10 +1,14 @@
 package pl.edu.agh.gpsdosimeter;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.text.method.BaseKeyListener;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.Switch;
 
 import androidx.activity.EdgeToEdge;
@@ -31,10 +35,11 @@ public class SettingsActivity extends AppCompatActivity {
 
         /* GUI elements */
         Switch en_comm_sw = findViewById(R.id.en_comm_sw);
+        EditText unsafe_level_inputtxt = findViewById(R.id.rad_unsafe_inputtxt);
         Button def_conf_btn = findViewById(R.id.load_def_conf_btn);
 
         FileManager initFileManager = new FileManager();
-        FileManager.AppConfig initAppConfig = initFileManager.createAppConfig("", "");
+        FileManager.AppConfig initAppConfig = initFileManager.createAppConfig("", "", "3.6");
         try {
             String configPath = new File(getApplicationContext().getFilesDir(), "config.xml").getAbsolutePath();
             initAppConfig = initFileManager.loadAppConfig(configPath);
@@ -45,14 +50,46 @@ public class SettingsActivity extends AppCompatActivity {
         if (initAppConfig != null)
         {
             en_comm_sw.setChecked(initAppConfig.getAddComments());
+            unsafe_level_inputtxt.setText(Float.toString(initAppConfig.getUnsafeLevel()));
         }
+
+        unsafe_level_inputtxt.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                Log.d("Changing unsafe level", unsafe_level_inputtxt.getText().toString());
+                FileManager fileManager = new FileManager();
+                FileManager.AppConfig appConfig = fileManager.createAppConfig("", "", "3.6");
+                try {
+                    String configPath = new File(getApplicationContext().getFilesDir(), "config.xml").getAbsolutePath();
+                    appConfig = fileManager.loadAppConfig(configPath);
+                } catch (Exception e) {
+                    Log.d("Changing unsafe level", e.toString());
+                }
+                if (appConfig != null) {
+                    appConfig.setUnsafeLevel(unsafe_level_inputtxt.getText().toString());
+                    appConfig.saveConfig(new File(getApplicationContext().getFilesDir(), "config.xml").getAbsolutePath());
+                } else {
+                    Log.e("Settings Activity", "Unable to open config file");
+                }
+            }
+        });
 
         en_comm_sw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 Log.d("DEBUG", String.valueOf(isChecked));
                 FileManager fileManager = new FileManager();
-                FileManager.AppConfig appConfig = fileManager.createAppConfig("", "");
+                FileManager.AppConfig appConfig = fileManager.createAppConfig("", "", "3.6");
                 try {
                     String configPath = new File(getApplicationContext().getFilesDir(), "config.xml").getAbsolutePath();
                     appConfig = fileManager.loadAppConfig(configPath);
@@ -75,7 +112,7 @@ public class SettingsActivity extends AppCompatActivity {
                 FileManager initFileManager = new FileManager();
                 if (initFileManager.createCleanConfig(new File(getApplicationContext().getFilesDir(), initFileManager.configName).getAbsolutePath()))
                 {
-                    FileManager.AppConfig initAppConfig = initFileManager.createAppConfig("", "");
+                    FileManager.AppConfig initAppConfig = initFileManager.createAppConfig("", "", "3.6");
                     try {
                         String configPath = new File(getApplicationContext().getFilesDir(), "config.xml").getAbsolutePath();
                         initAppConfig = initFileManager.loadAppConfig(configPath);
@@ -86,6 +123,7 @@ public class SettingsActivity extends AppCompatActivity {
                     if (initAppConfig != null)
                     {
                         en_comm_sw.setChecked(initAppConfig.getAddComments());
+                        unsafe_level_inputtxt.setText(Float.toString(initAppConfig.getUnsafeLevel()));
                     }
                 }
             }

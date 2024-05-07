@@ -289,7 +289,7 @@ public class ManageActivity extends AppCompatActivity {
     void createNewFile (String fileName)
     {
         FileManager fileManager = new FileManager();
-        appConfig = fileManager.createAppConfig("", "");
+        appConfig = fileManager.createAppConfig("", "", "3.6");
         try {
             String configPath = new File(getApplicationContext().getFilesDir(), fileManager.configName).getAbsolutePath();
             appConfig = fileManager.loadAppConfig(configPath);

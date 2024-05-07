@@ -27,11 +27,25 @@
         android:id="@+id/load_def_conf_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="8dp"
         android:backgroundTint="@color/black"
         android:text="@string/settings_new_config"
         android:textColor="@color/rad_yellow"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rad_unsafe_inputtxt" />
+
+    <EditText
+        android:id="@+id/rad_unsafe_inputtxt"
+        android:layout_width="230dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="20dp"
+        android:ems="10"
+        android:inputType="text"
+        android:textColor="@color/rad_yellow"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.064"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/en_comm_sw" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

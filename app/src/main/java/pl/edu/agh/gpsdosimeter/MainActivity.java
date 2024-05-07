@@ -75,6 +75,29 @@ class RadAppCB implements JRadicom.RCCallbacks {
                 parent.tv.setText(resStr);
             }
         });
+
+        FileManager.AppConfig appConfig;
+        if ((appConfig = parent.getAppConfig()) != null)
+        {
+            if (appConfig.getUnsafeLevel() <= (float)fdata.radiation)
+            {
+                parent.rad_result_txt.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        parent.rad_result_txt.setText(R.string.rad_status_BAD);
+                        parent.rad_status_led.setBackgroundColor(parent.color_red);
+                    }
+                });
+            } else {
+                parent.rad_result_txt.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        parent.rad_result_txt.setText(R.string.rad_status_OK);
+                        parent.rad_status_led.setBackgroundColor(parent.color_green);
+                    }
+                });
+            }
+        }
     }
 }
 
@@ -92,9 +115,13 @@ public class MainActivity extends AppCompatActivity {
     public ShapeableImageView rad_status_led;
     public TextView gps_status_txt;
     public ShapeableImageView gps_status_led;
+    public TextView conn_status_txt;
+    public ShapeableImageView conn_status_led;
     private EditText comment_txt;
     private Button measure_and_save_btn;
     private ActivityMainBinding binding;
+    public int color_red;
+    public int color_green;
 
     /* BT objects */
     BTTools btTools = null;
@@ -105,6 +132,8 @@ public class MainActivity extends AppCompatActivity {
     RadAppCB radappcb;
     /* Dosimeter status */
     public boolean device_connected = true;
+
+    FileManager.AppConfig appConfig = null;
 
     private void send_read_query() {
 
@@ -144,13 +173,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         FileManager fileManager = new FileManager();
-        FileManager.AppConfig appConfig = null;
         try {
             String configPath = new File(getApplicationContext().getFilesDir(), "config.xml").getAbsolutePath();
             appConfig = fileManager.loadAppConfig(configPath);
         } catch (Exception e){
-            Log.d("ERROR", e.toString());
+            Log.e("Load config", e.toString());
         }
+
+        color_green = getResources().getColor(R.color.rad_green);
+        color_red = getResources().getColor(R.color.rad_red);
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -162,6 +193,8 @@ public class MainActivity extends AppCompatActivity {
         rad_status_led = binding.radStatusLed;
         gps_status_txt = binding.gpsStatusTxt;
         gps_status_led = binding.gpsStatusLed;
+        conn_status_txt = binding.connStatusTxt;
+        conn_status_led = binding.connStatusLed;
         comment_txt = binding.commentTxt;
         measure_and_save_btn = binding.measureAndSaveBtn;
 
@@ -181,6 +214,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 current_measurement.setComment(comment);
                 //trigger radicom function for measure and save
+
             }
         });
 
@@ -195,10 +229,21 @@ public class MainActivity extends AppCompatActivity {
             checkPermission(android.Manifest.permission.BLUETOOTH_CONNECT, BTTools.permission_codes.BT.ordinal());
         }
         btTools = new BTTools();
+        BTTools.ConnInfo connInfo = null;
         try {
-            BTTools.ConnInfo connInfo = btTools.connect(this, btCb);
+            connInfo = btTools.connect(this, btCb);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            //throw new RuntimeException(e);
+            conn_status_txt.setText(getResources().getText(R.string.conn_status_ERR));
+            conn_status_led.setBackgroundColor((getResources().getColor(R.color.rad_red)));
+        }
+
+        if (connInfo != null && connInfo.getAddress() != "Error")
+        {
+            send_read_query(); //setup request query thread
+        } else {
+            conn_status_txt.setText(getResources().getText(R.string.conn_status_ERR));
+            conn_status_led.setBackgroundColor((getResources().getColor(R.color.rad_red)));
         }
 
         //some send function
@@ -207,7 +252,6 @@ public class MainActivity extends AppCompatActivity {
 
         //jradicom.decode(frame, radappcb); //decode response
 
-        send_read_query(); //setup request query thread
         /* some listen function */ //setup receive and decode thread
 
     }
@@ -236,6 +280,11 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(MainActivity.this, ManageActivity.class));
         }
         return true;
+    }
+
+    public FileManager.AppConfig getAppConfig()
+    {
+        return appConfig;
     }
 
     void set_rad_level(int level)
