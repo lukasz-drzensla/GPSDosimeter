@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -14,22 +15,35 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GPSDosimeter"
         tools:targetApi="31">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="${MAPS_API_KEY}" />
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+        <activity
+            android:name=".RadiationMap"
+            android:exported="false"
+            android:label="@string/title_activity_radiation_map" />
         <activity
             android:name=".ManageActivity"
             android:exported="false"
-            android:screenOrientation="portrait"
+            android:label="@string/manage_menu_item"
             android:parentActivityName=".MainActivity"
-            android:label="@string/manage_menu_item">
-        <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value="pl.edu.agh.gpsdosimeter.MainActivity" />
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="pl.edu.agh.gpsdosimeter.MainActivity" />
         </activity>
         <activity
             android:name=".SettingsActivity"
             android:exported="false"
-            android:screenOrientation="portrait"
+            android:label="@string/settings_menu_item"
             android:parentActivityName=".MainActivity"
-            android:label="@string/settings_menu_item">
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="pl.edu.agh.gpsdosimeter.MainActivity" />
@@ -52,10 +66,8 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths">
-            </meta-data>
-    </provider>
-
+                android:resource="@xml/file_paths"></meta-data>
+        </provider>
     </application>
 
 </manifest>

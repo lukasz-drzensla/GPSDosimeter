@@ -26,6 +26,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -73,8 +74,11 @@ public class ManageActivity extends AppCompatActivity {
     JRadicom jradicom;
     ManageAppCB manappcb;
 
+    private List<Measurement> measurementList;
+
     //GUI elements
     public Button fetch_data_button = null;
+    public Button create_map_btn = null;
     public ListView data_list_view = null;
     TextView working_file_txt = null;
     ArrayAdapter<String> adapter = null;
@@ -100,13 +104,12 @@ public class ManageActivity extends AppCompatActivity {
         }
         return result;
     }
-
     private void loadCollection(@NonNull FileManager fManager)
     {
-        List<Measurement> measTempList = fManager.parseMeasurements((new File(getApplicationContext().getFilesDir(), appConfig.getWorkingFileName())).getAbsolutePath());
-        if (measTempList != null)
+        measurementList = fManager.parseMeasurements((new File(getApplicationContext().getFilesDir(), appConfig.getWorkingFileName())).getAbsolutePath());
+        if (measurementList != null)
         {
-            for (Measurement meas : measTempList)
+            for (Measurement meas : measurementList)
             {
                 String com = "";
                 if (!Objects.equals(meas.getComment(), ""))
@@ -150,6 +153,7 @@ public class ManageActivity extends AppCompatActivity {
         }
         working_file_txt.setText(working_file);
         fetch_data_button = findViewById(R.id.fetch_data_btn);
+        create_map_btn = findViewById(R.id.create_map_btn);
         data_list_view = findViewById(R.id.data_list_view);
 
         measurements = new ArrayList<>();
@@ -165,6 +169,14 @@ public class ManageActivity extends AppCompatActivity {
         fetch_data_button.setOnClickListener(v -> {
             int[] frame = jradicom.rc_q_memread();
             //some send frame function
+        });
+        create_map_btn.setOnClickListener(v -> {
+            //start activity with parameter passed
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("measurements", (ArrayList<Measurement>)measurementList);
+            Intent intent = new Intent(ManageActivity.this, RadiationMap.class);
+            intent.putExtras(bundle);
+            startActivity(intent);
         });
     }
 

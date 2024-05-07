@@ -1,6 +1,8 @@
 package pl.edu.agh.gpsdosimeter;
 
-class Measurement {
+import java.io.Serializable;
+
+class Measurement implements Serializable {
     private String gpsData;
     private int radiation;
     private String dateTime;

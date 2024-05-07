@@ -38,7 +38,7 @@
     <!--Failure messages-->
     <string name="empty_or_unrecognisable">File is empty or unrecognisable</string>
     <string name="not_found">Not found</string>
-
+    <string name="title_activity_radiation_map">RadiationMap</string>
 
 
 </resources>
