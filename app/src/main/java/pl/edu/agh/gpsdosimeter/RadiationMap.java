@@ -57,21 +57,14 @@ public class RadiationMap extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-
         if (measurements != null)
         {
             for (Measurement m : measurements)
             {
-                Log.d("Measurement", m.getComment());
                 RMCParser rmcParser = new RMCParser();
                 RMCParser.GPSDataUnpacked gpsDataUnpacked = rmcParser.parse(m.getGPS());
-                Log.d("Parser", Double.toString(gpsDataUnpacked.getLat()));
                 LatLng latLng = new LatLng(gpsDataUnpacked.getLat(), gpsDataUnpacked.getLon());
-                mMap.addMarker(new MarkerOptions().position(latLng).title(m.getComment()).icon(BitmapDescriptorFactory.defaultMarker(RadiGrader.grade(m.getRadiation()))));
+                mMap.addMarker(new MarkerOptions().position(latLng).title(m.getComment()).icon(BitmapDescriptorFactory.defaultMarker(new RadiGrader().grade(m.getRadiation()))));
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
             }
         }

@@ -22,6 +22,8 @@ import com.google.android.material.imageview.ShapeableImageView;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import pl.edu.agh.gpsdosimeter.databinding.ActivityMainBinding;
 
@@ -149,6 +151,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                     handler.post(new Runnable(){
                         public void run() {
+                            //TODO: move to a separate function
                             /* setup frame */
                             int[] frame = jradicom.rc_q_read();
                             /* some send frame function */
@@ -213,8 +216,31 @@ public class MainActivity extends AppCompatActivity {
                     comment = comment_txt.getText().toString();
                 }
                 current_measurement.setComment(comment);
-                //trigger radicom function for measure and save
 
+                //TODO: move write section to a separate function
+                /* setup frame */
+                int[] frame = jradicom.rc_q_save();
+                /* some send frame function */
+                byte[] msg = new byte[JRadicom.RC.FRAME_SIZE];
+                for (int i = 0; i < JRadicom.RC.FRAME_SIZE; i++)
+                {
+                    msg[i] = (byte) frame[i];
+                }
+                if (btTools.isConnected())
+                {
+                    btTools.write(msg);
+                }
+
+                /* TODO: wait for response ACK (semaphore?) */
+
+                List<Measurement> measurementList = fileManager.loadMeasurements(new File(getApplicationContext().getFilesDir(), "").getAbsolutePath());
+                if (measurementList == null)
+                {
+                    measurementList = new ArrayList<Measurement>();
+                }
+                measurementList.add(current_measurement);
+                fileManager.saveMeasurements(measurementList, new File(getApplicationContext().getFilesDir(), appConfig.getWorkingFileName()).getAbsolutePath());
+                comment_txt.setText("");
             }
         });
 
@@ -233,27 +259,18 @@ public class MainActivity extends AppCompatActivity {
         try {
             connInfo = btTools.connect(this, btCb);
         } catch (IOException e) {
-            //throw new RuntimeException(e);
             conn_status_txt.setText(getResources().getText(R.string.conn_status_ERR));
             conn_status_led.setBackgroundColor((getResources().getColor(R.color.rad_red)));
         }
 
+        // If connected, start cyclic read, otherwise prompt disconnect
         if (connInfo != null && connInfo.getAddress() != "Error")
         {
-            send_read_query(); //setup request query thread
+            send_read_query(); // Setup request query thread
         } else {
             conn_status_txt.setText(getResources().getText(R.string.conn_status_ERR));
             conn_status_led.setBackgroundColor((getResources().getColor(R.color.rad_red)));
         }
-
-        //some send function
-        //some wait for response
-        //frame = jradicom.rc_r_read(); //for testing - reply to ourselves
-
-        //jradicom.decode(frame, radappcb); //decode response
-
-        /* some listen function */ //setup receive and decode thread
-
     }
 
     private void checkPermission(String permission, int requestCode)
@@ -285,55 +302,5 @@ public class MainActivity extends AppCompatActivity {
     public FileManager.AppConfig getAppConfig()
     {
         return appConfig;
-    }
-
-    void set_rad_level(int level)
-    {
-        switch (level)
-        {
-            case 0:
-            {
-                //safe
-                rad_result_txt.setText(R.string.rad_status_OK);
-                rad_status_led.setBackgroundColor((getResources().getColor(R.color.rad_green)));
-            }
-            case 1:
-            {
-                //bad, alarm
-                rad_result_txt.setText(R.string.rad_status_BAD);
-                rad_status_led.setBackgroundColor((getResources().getColor(R.color.rad_red)));
-            }
-            default:
-            {
-                //no measurement
-                rad_result_txt.setText(R.string.rad_status_NO_MEAS);
-                rad_status_led.setBackgroundColor((getResources().getColor(R.color.rad_yellow)));
-            }
-        }
-    }
-
-    void set_gps_status(int level)
-    {
-        switch (level)
-        {
-            case 0:
-            {
-                //safe
-                gps_status_txt.setText(R.string.gps_status_OK);
-                gps_status_led.setBackgroundColor((getResources().getColor(R.color.rad_green)));
-            }
-            case 1:
-            {
-                //bad, alarm
-                gps_status_txt.setText(R.string.gps_status_ERR);
-                gps_status_led.setBackgroundColor((getResources().getColor(R.color.rad_red)));
-            }
-            default:
-            {
-                //no measurement
-                gps_status_txt.setText(R.string.gps_status_disconnected);
-                gps_status_led.setBackgroundColor((getResources().getColor(R.color.rad_yellow)));
-            }
-        }
     }
 }

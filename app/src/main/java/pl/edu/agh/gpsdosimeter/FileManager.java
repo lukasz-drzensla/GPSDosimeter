@@ -1,5 +1,6 @@
 package pl.edu.agh.gpsdosimeter;
 
+import android.icu.util.Measure;
 import android.util.Log;
 
 import org.w3c.dom.Attr;
@@ -227,6 +228,55 @@ public class FileManager {
         AppConfig appConfig = loadAppConfig(configPath);
         String measurementsPath = new File (parentPath, appConfig.getWorkingFileName()).getAbsolutePath();
         return parseMeasurements(measurementsPath);
+    }
+
+    public void saveMeasurements (List<Measurement> measurementList, String path)
+    {
+        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder dBuilder = null;
+        try {
+            dBuilder = dbFactory.newDocumentBuilder();
+        } catch (ParserConfigurationException e) {
+            throw new RuntimeException(e);
+        }
+        Document doc = dBuilder.newDocument();
+        // root element
+        Element rootElement = doc.createElement("data");
+        doc.appendChild(rootElement);
+
+        for (Measurement m : measurementList)
+        {
+            Element measElement = doc.createElement("measurement");
+            Attr gps = doc.createAttribute("gps");
+            gps.setValue(m.getGPS());
+            Attr date = doc.createAttribute("date");
+            date.setValue(m.getDateTime());
+            Attr radiation = doc.createAttribute("radiation");
+            radiation.setValue(Integer.toString(m.getRadiation()));
+            Attr comment = doc.createAttribute("comment");
+            comment.setValue(m.getComment());
+            measElement.setAttributeNode(gps);
+            measElement.setAttributeNode(date);
+            measElement.setAttributeNode(radiation);
+            measElement.setAttributeNode(comment);
+
+            rootElement.appendChild(measElement);
+        }
+
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        Transformer transformer = null;
+        try {
+            transformer = transformerFactory.newTransformer();
+        } catch (TransformerConfigurationException e) {
+            throw new RuntimeException(e);
+        }
+        DOMSource source = new DOMSource(doc);
+        StreamResult result = new StreamResult(new File(path));
+        try {
+            transformer.transform(source, result);
+        } catch (TransformerException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /* return 0 on success, other on error */

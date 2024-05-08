@@ -37,6 +37,14 @@ Java_pl_edu_agh_gpsdosimeter_JRadicom_q_1memread(JNIEnv *env, jobject thiz) {
 }
 
 extern "C"
+JNIEXPORT jintArray JNICALL
+Java_pl_edu_agh_gpsdosimeter_JRadicom_q_1save(JNIEnv *env, jobject thiz) {
+    return q_save(env, thiz);
+}
+
+/* RMCPARSER */
+
+extern "C"
 JNIEXPORT jdouble JNICALL
 Java_pl_edu_agh_gpsdosimeter_RMCParser_getLat(JNIEnv *env, jobject thiz) {
     return getLat(env, thiz);

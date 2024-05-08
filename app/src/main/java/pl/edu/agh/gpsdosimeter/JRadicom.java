@@ -57,6 +57,7 @@ public class JRadicom implements JRadIF {
         static final int FC_MEM_READ = 1;
         static final int FC_SET_DATE_TIME = 2;
         static final int FC_CALIBRATION = 3;
+        static final int FC_SAVE = 4;
 
         static final int EC_OK = 0;
         static final int EC_GPS_ERR = 1;
@@ -72,6 +73,7 @@ public class JRadicom implements JRadIF {
     private native int[] q_memread();
     private native int[] q_setdt(int day, int month, int year, int hours, int minutes, int seconds);
     private native int[] q_calibrate(int ext0, int ext1, int meas0, int meas1);
+    private native int[] q_save();
 
     //Functions for sending responses - useful for tests
     private native int[] r_read();
@@ -167,6 +169,9 @@ public class JRadicom implements JRadIF {
                     break;
                 case RC.FC_CALIBRATION: //expecting only ACK
                     break;
+                case RC.FC_SAVE: //expecting only ACK
+                    //call save measurement
+                    break;
             }
         }
 
@@ -196,6 +201,11 @@ public class JRadicom implements JRadIF {
     public int[] rc_q_calibrate(int ext0, int ext1, int meas0, int meas1)
     {
         return q_calibrate(ext0, ext1, meas0, meas1);
+    }
+
+    public int[] rc_q_save()
+    {
+        return q_save();
     }
 
     /**
