@@ -1,6 +1,7 @@
 package pl.edu.agh.gpsdosimeter;
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -254,6 +256,26 @@ public class ManageActivity extends AppCompatActivity {
             working_file_txt.setText(working_file);
             dialog.dismiss();
         });
+        listView.setOnItemLongClickListener((parent, view, position, id) -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(getResources().getString(R.string.remove) + " " + names[position] + "?");
+            builder.setPositiveButton(getResources().getString(R.string.remove), new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    File toRemove = new File(getApplicationContext().getFilesDir(), names[position]);
+                    toRemove.delete();
+                    dialog.dismiss();
+                }
+            });
+            builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    dialog.dismiss();
+                }
+            });
+            AlertDialog removeDialog = builder.create();
+            removeDialog.show();
+
+            return true;
+        });
     }
 
     void exportDialog()
@@ -291,6 +313,7 @@ public class ManageActivity extends AppCompatActivity {
         } else if (id == R.id.open_file_btn)
         {
             openFileDialog();
+            Toast.makeText(getApplicationContext(), getResources().getString(R.string.rem_file_info), Toast.LENGTH_LONG).show();
         } else if (id == R.id.export_as)
         {
             exportDialog();

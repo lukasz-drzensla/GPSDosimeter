@@ -7,8 +7,7 @@
     <string name="settings_menu_item">Settings</string>
 
     <string name="new_file_menu_item">New measurement collection</string>
-    <string name="open_file_menu_item">Open measurement collection</string>
-    <string name="remove_menu_item">Remove measurement collections</string>
+    <string name="open_file_menu_item">Open/remove measurement collection</string>
     <string name="export_menu_item">Share as CSV</string>
 
     <string name="rad_status_OK">Radiation level safe</string>
@@ -33,7 +32,9 @@
     <string name="new_file_title">Create new measurement collection</string>
     <string name="new_file_txt">Enter file name</string>
     <string name="new_file_create">Create file</string>
+    <string name="rem_file_info">Long click to remove a file</string>
     <string name="cancel">Cancel</string>
+    <string name="remove">Remove</string>
 
     <!--Failure messages-->
     <string name="empty_or_unrecognisable">File is empty or unrecognisable</string>
