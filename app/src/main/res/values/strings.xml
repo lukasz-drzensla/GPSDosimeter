@@ -35,11 +35,19 @@
     <string name="rem_file_info">Long click to remove a file</string>
     <string name="cancel">Cancel</string>
     <string name="remove">Remove</string>
+    <string name="save">Save</string>
 
     <!--Failure messages-->
     <string name="empty_or_unrecognisable">File is empty or unrecognisable</string>
     <string name="not_found">Not found</string>
+
     <string name="title_activity_radiation_map">RadiationMap</string>
+
+    <string name="external_input1">External device measurement #1</string>
+    <string name="external_input2">External device measurement #2</string>
+
+    <string name="internal_input1">Internal measurement #1</string>
+    <string name="internal_input2">Internal measurement #2</string>
 
 
 </resources>

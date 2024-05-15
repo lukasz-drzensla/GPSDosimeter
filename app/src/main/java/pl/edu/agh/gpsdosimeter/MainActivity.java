@@ -295,6 +295,9 @@ public class MainActivity extends AppCompatActivity {
         } else if (id == R.id.manage_btn)
         {
             startActivity(new Intent(MainActivity.this, ManageActivity.class));
+        } else if (id == R.id.calibrate_btn)
+        {
+            startActivity(new Intent(MainActivity.this, CalibrationActivity.class));
         }
         return true;
     }
