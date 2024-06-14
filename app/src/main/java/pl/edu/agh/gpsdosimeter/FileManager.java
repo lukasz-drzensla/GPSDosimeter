@@ -296,7 +296,7 @@ public class FileManager {
         {
             List<String> row = new ArrayList<String>();
             row.add(meas.getGPS());
-            row.add(Integer.toString(meas.getRadiation()));
+            row.add(Float.toString(meas.getRadiation()/10.0f));
             row.add(meas.getDateTime());
             row.add(meas.getComment());
             elements.add(row);
