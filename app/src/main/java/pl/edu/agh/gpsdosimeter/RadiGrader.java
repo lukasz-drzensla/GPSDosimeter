@@ -6,7 +6,7 @@ import static com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_RED;
 import static com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_YELLOW;
 
 public class RadiGrader {
-    private final int rad_thresholds[] = {5, 10, 15, 20, 25, 30, 35, 40, 45};
+    private final int rad_thresholds[] = {0, 50, 100, 150, 200, 250, 300, 350, 400};
     private final float color_step = (HUE_GREEN - HUE_RED)/rad_thresholds.length;
     private float color_thresholds[] = new float [rad_thresholds.length];
 

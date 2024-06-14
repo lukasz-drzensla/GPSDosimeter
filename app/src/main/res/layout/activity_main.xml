@@ -39,7 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="118dp"
         android:fontFamily="@font/dseg14"
-        android:text="m"
+        android:text="u"
         android:textColor="@color/rad_yellow"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="@+id/val_sv_txt"

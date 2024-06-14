@@ -64,7 +64,7 @@ public class RadiationMap extends FragmentActivity implements OnMapReadyCallback
                 RMCParser rmcParser = new RMCParser();
                 RMCParser.GPSDataUnpacked gpsDataUnpacked = rmcParser.parse(m.getGPS());
                 LatLng latLng = new LatLng(gpsDataUnpacked.getLat(), gpsDataUnpacked.getLon());
-                mMap.addMarker(new MarkerOptions().position(latLng).title(m.getComment() + ": " + Integer.toString(m.getRadiation()) + " mSv/h").icon(BitmapDescriptorFactory.defaultMarker(new RadiGrader().grade(m.getRadiation()))));
+                mMap.addMarker(new MarkerOptions().position(latLng).title(m.getComment() + ": " + Float.toString(m.getRadiation()/10.0f) + " uSv/h").icon(BitmapDescriptorFactory.defaultMarker(new RadiGrader().grade(m.getRadiation()))));
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
             }
         }

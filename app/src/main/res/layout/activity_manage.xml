@@ -27,6 +27,7 @@
         android:backgroundTint="@color/black"
         android:text="@string/fetch_data_btn"
         android:textColor="@color/rad_yellow"
+        android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/data_list_view" />
 

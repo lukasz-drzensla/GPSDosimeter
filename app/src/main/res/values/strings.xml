@@ -27,6 +27,7 @@
 
     <string name="settings_enable_comments">Enable comments</string>
     <string name="settings_new_config">Load default configuration</string>
+    <string name="settings_thrshld_val">Alarm value</string>
 
     <!--Dialogs-->
     <string name="new_file_title">Create new measurement collection</string>

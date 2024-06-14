@@ -52,7 +52,7 @@ class RadAppCB implements JRadicom.RCCallbacks {
 
     public void read_r_cb(JRadicom.rcfdataupck_t fdata)
     {
-        String radiation = Integer.toString(fdata.radiation);
+        String radiation = Float.toString(((float)(fdata.radiation))/10.0f);
         String day = Integer.toString(fdata.day);
         String month = Integer.toString(fdata.month);
         String year = Integer.toString(fdata.year);

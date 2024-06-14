@@ -256,12 +256,12 @@ GPSDataUnpacked RMCParser::parse_string (std::string input)
     result.lat_dir = rmc_fields[4][0];
     result.lon.from_str (rmc_fields[5]);
     result.lon_dir = rmc_fields[6][0];
-    result.speed_Kn.from_str(rmc_fields[7]);
+    /*result.speed_Kn.from_str(rmc_fields[7]);
     result.track_true.from_str(rmc_fields[8]);
     result.date.from_str(rmc_fields[9]);
     result.mag_var.from_str(rmc_fields[10]);
     result.var_dir = rmc_fields[11][0];
     result.mode_ind = rmc_fields[12][0];
-    result.check_sum = rmc_fields[12].substr(1, rmc_fields[12].size()-1);
+    result.check_sum = rmc_fields[12].substr(1, rmc_fields[12].size()-1);*/
     return result;
 }

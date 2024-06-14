@@ -97,7 +97,7 @@ public class BTTools {
                 try {
                     bytes = socketInputStream.read(buffer);
                     String readMessage = new String(buffer, 0, bytes);
-                    Log.i("logging", readMessage + "");
+                    Log.i("Recv message", readMessage + "");
                     if (ubyteToInt(buffer[0]) == 219)
                     {
                         Log.e("Recv", "Frame begin");
@@ -107,7 +107,10 @@ public class BTTools {
                     {
                         for (int i = 0; i < bytes; i++)
                         {
-                            frame[frame_bytes+i] = ubyteToInt(buffer[i]);
+                            if (i < frame.length)
+                            {
+                                frame[frame_bytes+i] = ubyteToInt(buffer[i]);
+                            }
                         }
                         frame_bytes += bytes;
                     }
